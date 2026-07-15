@@ -3,8 +3,9 @@ from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.api.permissions import IsManagerOrSuperUser
-from users.api.serializers import EmployeeRegisterSerializer, LoginSerializer, DepartmentSerializer
+from users.api.permissions import IsManagerOrSuperUser, IsSuperUser
+from users.api.serializers import EmployeeRegisterSerializer, LoginSerializer, DepartmentSerializer, \
+    ManagerRegisterSerializer
 from users.models import Department
 from django.contrib.auth import get_user_model, authenticate
 
@@ -54,3 +55,9 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     permission_classes = [IsManagerOrSuperUser]
     lookup_field = 'public_id'
+
+class ManagerRegistrationView(generics.CreateAPIView):
+
+    queryset = User.objects.all()
+    serializer_class = ManagerRegisterSerializer
+    permission_classes = [IsSuperUser]
