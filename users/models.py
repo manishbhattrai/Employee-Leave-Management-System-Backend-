@@ -27,7 +27,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     ]
 
     first_name = models.CharField(max_length=220)
-    middle_name = models.CharField(max_length=220)
+    middle_name = models.CharField(max_length=220, blank=True,null=True)
     last_name = models.CharField(max_length=220)
     email = models.EmailField(unique=True)
     department = models.ForeignKey(Department, on_delete=models.PROTECT, null=True,blank=True)
