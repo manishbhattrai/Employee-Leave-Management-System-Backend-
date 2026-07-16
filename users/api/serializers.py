@@ -42,10 +42,15 @@ class EmployeeRegisterSerializer(serializers.ModelSerializer):
 
     def validate_email(self,value):
 
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email already exists.")
+        #if User.objects.filter(email=value).exists():
+            #raise serializers.ValidationError("Email already exists.")
+        #return value.lower()
 
-        return value.lower()
+        value = value.strip().lower()
+        if not value.endswith("@gmail.com"):
+            raise serializers.ValidationError("Only gmail address(@gmail.com) are allowed.")
+
+        return value
 
     def validate(self,data):
 
@@ -112,10 +117,15 @@ class ManagerRegisterSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
 
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email already exists.")
+        #if User.objects.filter(email=value).exists():
+            #raise serializers.ValidationError("Email already exists.")
+        #return value.lower()
 
-        return value.lower()
+        value = value.strip().lower()
+        if not value.endswith("@gmail.com"):
+            raise serializers.ValidationError("Only gmail address(@gmail.com) are allowed.")
+
+        return value
 
     def validate(self, data):
 

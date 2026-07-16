@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model, authenticate
 
 User = get_user_model()
 
-class RegistrationView(generics.CreateAPIView):
+class EmployeeRegistrationView(generics.CreateAPIView):
 
     queryset = User.objects.all()
     serializer_class = EmployeeRegisterSerializer
