@@ -20,15 +20,14 @@ class LeaveRequest(models.Model):
         ('REJECTED','REJECTED'),
     ]
 
-
-
     public_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     submitted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='leave_requests')
     reason = models.TextField()
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateField()
+    end_date = models.DateField()
     status = models.CharField(choices=STATUS_CHOICES, max_length=10, default='PENDING')
     leave_type = models.CharField(choices=LEAVE_TYPE_CHOICES, max_length=7)
+    is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
