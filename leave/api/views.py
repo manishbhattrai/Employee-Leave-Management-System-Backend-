@@ -5,12 +5,14 @@ from rest_framework.response import Response
 from leave.api.serializers import EmployeeLeaveRequestSerializer, ManagerLeaveRequestSerializer
 from leave.models import LeaveRequest
 from .permissions import IsEmployee, IsLeaveRequestOwner, IsManager
+from .paginations import LeaveRequestPagination
 
 
 class EmployeeLeaveRequestViewSet(viewsets.ModelViewSet):
 
     serializer_class = EmployeeLeaveRequestSerializer
     permission_classes = [IsEmployee, IsLeaveRequestOwner]
+    pagination_class = LeaveRequestPagination
 
     filterset_fields = [
         "status",
@@ -46,6 +48,7 @@ class ManagerLeaveRequestViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = ManagerLeaveRequestSerializer
     permission_classes = [IsManager]
+    pagination_class = LeaveRequestPagination
 
     filterset_fields = [
         "status",
@@ -77,9 +80,12 @@ class ManagerLeaveRequestViewSet(viewsets.ReadOnlyModelViewSet):
         leave_request.status = "APPROVED"
         leave_request.save()
 
-        return Response({"message":"Leave request approved."},
-                        status=status.HTTP_200_OK
-        )
+        #return Response({"message":"Leave request approved."},
+                        #status=status.HTTP_200_OK
+        #)
+
+        serializer = self.get_serializer(leave_request)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["patch"])
     def reject(self, request, public_id=None):
@@ -93,6 +99,9 @@ class ManagerLeaveRequestViewSet(viewsets.ReadOnlyModelViewSet):
         leave_request.status = "REJECTED"
         leave_request.save()
 
-        return Response({"message":"Leave request rejected."},
-                        status=status.HTTP_200_OK
-        )
+        #return Response({"message":"Leave request rejected."},
+                        #status=status.HTTP_200_OK
+        #)
+
+        serializer = self.get_serializer(leave_request)
+        return Response(serializer.data, status=status.HTTP_200_OK)
