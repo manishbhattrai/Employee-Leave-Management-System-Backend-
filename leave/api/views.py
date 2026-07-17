@@ -11,6 +11,12 @@ class EmployeeLeaveRequestViewSet(viewsets.ModelViewSet):
 
     serializer_class = EmployeeLeaveRequestSerializer
     permission_classes = [IsEmployee, IsLeaveRequestOwner]
+
+    filterset_fields = [
+        "status",
+        "leave_type",
+    ]
+
     lookup_field = "public_id"
 
     def get_queryset(self):
@@ -40,11 +46,22 @@ class ManagerLeaveRequestViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = ManagerLeaveRequestSerializer
     permission_classes = [IsManager]
+
+    filterset_fields = [
+        "status",
+        "leave_type",
+    ]
+    search_fields = [
+        "submitted_by__first_name",
+        "submitted_by__middle_name",
+        "submitted_by__last_name",
+    ]
+
     lookup_field = "public_id"
 
     def get_queryset(self):
         return (
-            LeaveRequest.objects.select_related('submitted_by','submitted_by__department')
+            LeaveRequest.objects.select_related('submitted_by__department')
             .filter(is_deleted=False)
         )
 
