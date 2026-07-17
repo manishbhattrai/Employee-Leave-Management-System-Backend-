@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from  django.utils import timezone
 from leave.models import LeaveRequest
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class EmployeeLeaveRequestSerializer(serializers.ModelSerializer):
 
@@ -27,3 +30,28 @@ class EmployeeLeaveRequestSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("End date cannot be before start date.")
 
         return data
+
+class EmployeeNestedSerializer(serializers.ModelSerializer):
+
+    department = serializers.CharField(source='department.name', read_only=True)
+    name = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ['id','email','name','department']
+
+    def get_name(self,obj):
+
+        if obj.middle_name:
+            return f"{obj.first_name} {obj.middle_name} {obj.last_name}"
+        return f"{obj.first_name} {obj.last_name}"
+
+
+
+class ManagerLeaveRequestSerializer(serializers.ModelSerializer):
+
+    submitted_by = EmployeeNestedSerializer(read_only=True)
+
+    class Meta:
+        model = LeaveRequest
+        fields = ['public_id','submitted_by','reason',
+                  'start_date','end_date','leave_type','status','created_at']
