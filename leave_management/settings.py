@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'drf_spectacular',
     'users',
     'leave',
 ]
@@ -140,7 +141,8 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS":[
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
-    ]
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 from datetime import timedelta
@@ -156,4 +158,20 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
 
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Employee Leave Management API",
+    "DESCRIPTION": """
+    REST API for managing employee leave requests.
+
+    Features:
+    - JWT Authentication
+    - Employee leave requests
+    - Manager approval/rejection
+    - Leave filtering and searching
+    """,
+    "VERSION": "1.0.0",
+    "COMPONENT_SPLIT_REQUEST":True,
+    "SERVE_INCLUDE_SCHEMA": False,
 }

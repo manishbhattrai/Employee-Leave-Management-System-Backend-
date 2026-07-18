@@ -2,12 +2,15 @@ from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from leave.api.serializers import EmployeeLeaveRequestSerializer, ManagerLeaveRequestSerializer
+from leave.api.serializers import EmployeeLeaveRequestSerializer, ManagerLeaveRequestSerializer, \
+    MessageResponseSerializer
 from leave.models import LeaveRequest
 from .permissions import IsEmployee, IsLeaveRequestOwner, IsManager
 from .paginations import LeaveRequestPagination
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=['Employee Leave Management'])
 class EmployeeLeaveRequestViewSet(viewsets.ModelViewSet):
 
     serializer_class = EmployeeLeaveRequestSerializer
@@ -44,6 +47,7 @@ class EmployeeLeaveRequestViewSet(viewsets.ModelViewSet):
         instance.is_deleted = True
         instance.save()
 
+@extend_schema(tags=['Manager Leave Management'])
 class ManagerLeaveRequestViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = ManagerLeaveRequestSerializer
@@ -68,6 +72,16 @@ class ManagerLeaveRequestViewSet(viewsets.ReadOnlyModelViewSet):
             .filter(is_deleted=False)
         )
 
+    @extend_schema(
+        tags=["Manager Leave Management"],
+        summary="Approve leave request",
+        request=None,
+        description="Manager approves a pending leave request.",
+        responses={
+            200:ManagerLeaveRequestSerializer,
+            400:MessageResponseSerializer
+        },
+    )
     @action(detail=True, methods=["patch"])
     def approve(self, request, public_id=None):
 
@@ -87,6 +101,16 @@ class ManagerLeaveRequestViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(leave_request)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        tags=["Manager Leave Management"],
+        summary="Reject leave request",
+        request=None,
+        description="Manager rejects a pending leave request.",
+        responses={
+            200:ManagerLeaveRequestSerializer,
+            400:MessageResponseSerializer
+        },
+    )
     @action(detail=True, methods=["patch"])
     def reject(self, request, public_id=None):
 

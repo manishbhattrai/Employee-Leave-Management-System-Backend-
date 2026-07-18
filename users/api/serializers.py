@@ -76,6 +76,7 @@ class LoginSerializer(serializers.Serializer):
 
 class DepartmentSerializer(serializers.ModelSerializer):
 
+    description = serializers.CharField(required=False, allow_null=True)
     class Meta:
         model = Department
         fields = ['public_id','name','description','created_at','updated_at']
@@ -146,3 +147,9 @@ class ManagerRegisterSerializer(serializers.ModelSerializer):
             **validated_data
         )
         return user
+
+class TokenResponseSerializer(serializers.Serializer):
+
+    message = serializers.CharField()
+    refresh = serializers.CharField()
+    access = serializers.CharField()

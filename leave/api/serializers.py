@@ -56,3 +56,6 @@ class ManagerLeaveRequestSerializer(serializers.ModelSerializer):
         model = LeaveRequest
         fields = ['public_id','submitted_by','reason',
                   'start_date','end_date','leave_type','status','created_at']
+
+class MessageResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()

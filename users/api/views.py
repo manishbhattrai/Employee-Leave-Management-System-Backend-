@@ -5,23 +5,30 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.api.permissions import IsManagerOrSuperUser, IsSuperUser
 from users.api.serializers import EmployeeRegisterSerializer, LoginSerializer, DepartmentSerializer, \
-    ManagerRegisterSerializer
+    ManagerRegisterSerializer, TokenResponseSerializer
 from users.models import Department
 from django.contrib.auth import get_user_model, authenticate
+from drf_spectacular.utils import extend_schema
+
 
 User = get_user_model()
 
+@extend_schema(tags=["Authentication"])
 class EmployeeRegistrationView(generics.CreateAPIView):
 
     queryset = User.objects.all()
     serializer_class = EmployeeRegisterSerializer
     permission_classes = [AllowAny]
 
-
 class LoginView(APIView):
 
     permission_classes = [AllowAny]
 
+    @extend_schema(
+        tags=["Authentication"],
+        request=LoginSerializer,
+        responses=TokenResponseSerializer
+    )
     def post(self,request):
 
         data = request.data
@@ -49,6 +56,11 @@ class LoginView(APIView):
         }, status=status.HTTP_200_OK
         )
 
+@extend_schema(
+    tags=["Departments"],
+    description="employee can only retrieve or get the department."
+            " other functionality is handled by manager or superuser."
+)
 class DepartmentViewSet(viewsets.ModelViewSet):
 
     queryset = Department.objects.all()
@@ -56,6 +68,10 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsManagerOrSuperUser]
     lookup_field = 'public_id'
 
+@extend_schema(
+    tags=["Authentication"],
+    description="superuser can only create manager account."
+)
 class ManagerRegistrationView(generics.CreateAPIView):
 
     queryset = User.objects.all()
