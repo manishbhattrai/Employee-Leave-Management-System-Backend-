@@ -26,8 +26,9 @@ class EmployeeLeaveRequestSerializer(serializers.ModelSerializer):
         start_date = data.get("start_date")
         end_date = data.get("end_date")
 
-        if end_date < start_date:
-            raise serializers.ValidationError("End date cannot be before start date.")
+        if start_date and end_date:
+            if end_date < start_date:
+                raise serializers.ValidationError("End date cannot be before start date.")
 
         return data
 
