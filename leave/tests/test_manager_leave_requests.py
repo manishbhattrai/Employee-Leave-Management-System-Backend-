@@ -1,6 +1,7 @@
 from .test_setup import TestSetup
 from leave.models import LeaveRequest
 from django.urls import reverse
+from datetime import date, timedelta
 
 
 class TestManagerLeaveRequestViewSet(TestSetup):
@@ -121,8 +122,8 @@ class TestManagerLeaveRequestViewSet(TestSetup):
         leave_request = LeaveRequest.objects.create(
             submitted_by=self.employee,
             leave_type="SICK",
-            start_date="2026-08-01",
-            end_date="2026-08-03",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=3),
             reason="Medical leave",
         )
 
@@ -143,8 +144,8 @@ class TestManagerLeaveRequestViewSet(TestSetup):
         leave_request = LeaveRequest.objects.create(
             submitted_by=self.employee,
             leave_type="SICK",
-            start_date="2026-08-01",
-            end_date="2026-08-03",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=3),
             reason="Medical leave",
             status="APPROVED"
         )
@@ -163,8 +164,8 @@ class TestManagerLeaveRequestViewSet(TestSetup):
         leave_request = LeaveRequest.objects.create(
             submitted_by=self.employee,
             leave_type="SICK",
-            start_date="2026-08-04",
-            end_date="2026-08-05",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=3),
             reason="Medical leave",
         )
 
@@ -183,8 +184,8 @@ class TestManagerLeaveRequestViewSet(TestSetup):
         leave_request = LeaveRequest.objects.create(
             submitted_by=self.employee,
             leave_type="SICK",
-            start_date="2026-08-08",
-            end_date="2026-08-09",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=3),
             reason="Medical leave",
             status="REJECTED"
         )

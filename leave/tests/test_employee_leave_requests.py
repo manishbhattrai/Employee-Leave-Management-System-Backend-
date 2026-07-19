@@ -11,8 +11,8 @@ class TestEmployeeLeaveRequestViewSet(TestSetup):
         payload = {
 
             "reason":"Sick Leave",
-            "start_date":"2026-07-18",
-            "end_date":"2026-07-20",
+            "start_date": f"{date.today()}",
+            "end_date": f"{date.today() + timedelta(days=2)}",
             "leave_type":"SICK",
         }
 
@@ -30,8 +30,8 @@ class TestEmployeeLeaveRequestViewSet(TestSetup):
     def test_employee_cannot_create_leave_without_reason(self):
         self.client.force_authenticate(self.employee)
         payload = {
-            "start_date": "2026-07-20",
-            "end_date": "2026-07-22",
+            "start_date": f"{date.today()}",
+            "end_date": f"{date.today() + timedelta(days=2)}",
             "leave_type":"PAID"
         }
 
@@ -64,8 +64,8 @@ class TestEmployeeLeaveRequestViewSet(TestSetup):
 
         payload = {
             "reason": "Sick Leave",
-            "start_date": "2026-07-25",
-            "end_date": "2026-07-20",
+            "start_date": f"{date.today()}",
+            "end_date": f"{date.today() - timedelta(days=2)}",
             "leave_type":"SICK"
         }
 
@@ -82,8 +82,8 @@ class TestEmployeeLeaveRequestViewSet(TestSetup):
         payload = {
 
             "reason": "Sick Leave",
-            "start_date": "2026-07-18",
-            "end_date": "2026-07-20",
+            "start_date": f"{date.today()}",
+            "end_date": f"{date.today() + timedelta(days=2)}",
             "leave_type": "SICK",
         }
 
@@ -110,8 +110,8 @@ class TestEmployeeLeaveRequestViewSet(TestSetup):
         leave = LeaveRequest.objects.create(
             submitted_by=self.other_employee,
             reason="Other leave",
-            start_date="2026-07-20",
-            end_date="2026-07-22",
+            start_date=date.today(),
+            end_date=date.today() + timedelta(days=2),
             leave_type="CASUAL"
         )
 
@@ -188,7 +188,7 @@ class TestEmployeeLeaveRequestViewSet(TestSetup):
     def test_employee_cannot_delete_rejected_leave(self):
         self.client.force_authenticate(self.employee)
 
-        self.leave_request.status = "APPROVED"
+        self.leave_request.status = "REJECTED"
         self.leave_request.save()
 
         url = reverse("employee-leave-request-detail", kwargs={"public_id": self.leave_request.public_id})
